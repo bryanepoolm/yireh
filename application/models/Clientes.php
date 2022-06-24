@@ -20,6 +20,11 @@ class Clientes extends CI_Model
 {
   public $table = 'clientes';
 
+  public $id;
+  public $nombre;
+  public $direccion;
+  public $telefono;
+
   // ------------------------------------------------------------------------
 
   public function __construct()
@@ -36,6 +41,11 @@ class Clientes extends CI_Model
   {
     $this->db->insert($this->table, $datos);
     return $this->db->insert_id();
+  }
+
+  public function selectClientes()
+  {
+    return $this->db->get('clientes')->result_array();
   }
 }
 

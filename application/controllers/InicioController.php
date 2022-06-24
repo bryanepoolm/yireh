@@ -20,12 +20,20 @@ class InicioController extends CI_Controller
   {
     parent::__construct();
     $this->load->library('form_validation');
+    $this->load->library('session');
     $this->load->model('clientes', 'c');
     $this->load->model('ordenes', 'o');
   }
 
   public function index()
   {
+
+    if (isset($_POST['cerrar-orden'])) {
+      $id_orden = $this->session->userdata('current-order');
+      $this->o->updateOrden(['status' => 1], ['id' => $id_orden]);
+      $this->session->unset_userdata('current-order');
+    }
+
     $view = $this->load->view('pages/inicio', [], true);
     $this->load->view('layouts/mainLayout', ['contenido' => $view, 'titulo' => 'Inicio']);
   }
@@ -50,19 +58,21 @@ class InicioController extends CI_Controller
         $id_cliente = $this->c->insertarCliente($datos);
 
         if ($id_cliente > 0) {
-          if (isset($_POST['id-orden']) && $_POST['id-orden'] != '')
-            $id_orden = $this->input->post('id-orden', true);
-          else {
+          if (isset($_SESSION['current-order']) && !empty($_SESSION['current-order'] && $this->o->selectOrden($_SESSION['current-order']) == true)) {
+            $id_orden = $_SESSION['current-order'];
+          } else {
             $datos_orden = [];
             $datos_orden['fecha'] = date('Y-m-d H:i:s');
             $id_orden = $this->o->insertarOrden($datos_orden);
+            $this->session->set_userdata('current-order', $id_orden);
           }
           $datos_orden_cliente = [];
           $datos_orden_cliente['id_orden'] = $id_orden;
           $datos_orden_cliente['id_cliente'] = $id_cliente;
-          if ($this->o->insertarOrdenCliente($datos_orden_cliente))
-            $this->output->set_content_type('text/plain')->set_status_header(201)->set_output('Agregado');
-          else
+          if ($this->o->insertarOrdenCliente($datos_orden_cliente)) {
+            $this->session->set_userdata('current-order', $id_orden);
+            $this->output->set_content_type('text/plain')->set_status_header(201)->set_output('Te la meti');
+          } else
             $this->output->set_content_type('text/plain')->set_status_header(500)->set_output('Algo salio mal al hacer el registro');
         } else
           $this->output->set_content_type('text/plain')->set_status_header(500)->set_output('Algo salio mal al registrar el cliente');
