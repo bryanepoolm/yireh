@@ -126,7 +126,33 @@
         request.fail((jqXHR) => {});
     }
 
-    $("#nombre-cliente").autocomplete({
+    /* $("#nombre-cliente").autocomplete({
         source: "<?= base_url('clientesController/getClientes') ?>"
+    }); */
+
+
+    $("#nombre-cliente").autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: "<?= base_url('clientesController/getClientes') ?>",
+                type: "GET",
+                data: request,
+                success: function(data) {
+                    response($.map(data, function(el) {
+                        return {
+                            label: el.nombre,
+                            value: el.id
+                        };
+                    }));
+                }
+            });
+        },
+        select: function(event, ui) {
+            // Prevent value from being put in the input:
+            this.value = ui.item.label;
+            // Set the next input's value to the "value" of the item.
+            $(this).next("input").val(ui.item.value);
+            event.preventDefault();
+        }
     });
 </script>

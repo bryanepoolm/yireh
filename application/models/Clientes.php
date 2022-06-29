@@ -30,7 +30,6 @@ class Clientes extends CI_Model
   public function __construct()
   {
     parent::__construct();
-    $this->load->model('Clientes', 'c');
   }
 
   // ------------------------------------------------------------------------
@@ -43,9 +42,12 @@ class Clientes extends CI_Model
     return $this->db->insert_id();
   }
 
-  public function selectClientes()
+  public function selectClientes($like = false)
   {
-    return $this->db->get('clientes')->result_array();
+    if ($like != false) $this->db->like('nombre', $like);
+    $this->db->select();
+    $this->db->from($this->table);
+    return $this->db->get()->result_array();
   }
 
   public function deleteCliente($id)

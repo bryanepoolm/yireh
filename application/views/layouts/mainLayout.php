@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="<?= base_url('assets/dist/css/dashboard.css') ?>">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+
     <style>
         .bd-placeholder-img {
             font-size: 1.125rem;
