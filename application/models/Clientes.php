@@ -47,6 +47,12 @@ class Clientes extends CI_Model
   {
     return $this->db->get('clientes')->result_array();
   }
+
+  public function deleteCliente($id)
+  {
+    $this->db->delete($this->table, ['id' => $id]);
+    return true;
+  }
 }
 
 /* End of file Clientes.php */

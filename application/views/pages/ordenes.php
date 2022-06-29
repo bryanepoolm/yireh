@@ -29,10 +29,10 @@
                         <td>${v.fecha}</td>
                         <td>${v.status}</td>
                         <td>
-                            <a href="javascript:void(0)" onclick="eliminarClienteOrden(${v.id})" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Borrar de la orden">
+                            <a href="javascript:void(0)" onclick="eliminar(${v.id})" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Borrar de la orden">
                                 <i style="font-size: 1rem;" class="bi-dash-circle"></i>
                             </a>
-                            <a href="javascript:void(0)" onclick="eliminarClienteOrden(${v.id})" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Descargar lista">
+                            <a href="<?= base_url('ordenesController/downloadOrden/') ?>${v.id}" target="_blank" download class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Descargar lista">
                                 <i style="font-size: 1rem;" class="bi-cloud-download"></i>
                             </a>
                         </td>
@@ -44,5 +44,14 @@
             table.html('<center>Sin registros</center>');
         });
 
+    }
+    const eliminar = (id) => {
+        if (confirm('Eliminar orden?')) {
+            const request = $.get(`<?= base_url('ordenesController/deleteOrden/') ?>${id}`);
+            request.done((response) => {
+                loadTablaOrdenes();
+            })
+            request.fail((jqXHR) => alert(jqXHR.responseText));
+        }
     }
 </script>

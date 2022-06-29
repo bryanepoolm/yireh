@@ -44,10 +44,11 @@ class Ordenes extends CI_Model
     return true;
   }
 
-  public function selectOrden($id_orden)
+  public function selectOrden($id_orden, $returnData = false)
   {
     $this->db->where('id', $id_orden);
-    if ($this->db->get('ordenes')->num_rows() > 0) return true;
+    $get = $this->db->get('ordenes');
+    if ($get->num_rows() > 0) if ($returnData) return $get->row();
     else return false;
   }
 
@@ -66,6 +67,11 @@ class Ordenes extends CI_Model
   {
     $where['id_orden'] = $this->session->userdata('current-order');
     $this->db->delete($this->table2, $where);
+  }
+  public function deleteOrden($id)
+  {
+    $this->db->delete($this->table, ['id' => $id]);
+    return true;
   }
 
   public function selectOrdenClientes(int $id_orden = null)

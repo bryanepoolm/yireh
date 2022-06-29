@@ -30,7 +30,7 @@
                         <td>${v.direccion}</td>
                         <td>${v.telefono}</td>
                         <td>
-                            <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Borrar de la orden">
+                            <a onclick="eliminar(${v.id})" href="javascript:void(0)" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Borrar de la orden">
                                 <i style="font-size: 1rem;" class="bi-dash-circle"></i>
                             </a>
                         </td>
@@ -42,5 +42,16 @@
             table.html('<center>Sin registros</center>');
         });
 
+    }
+    const eliminar = (id) => {
+        if (confirm('Eliminar cliente?')) {
+            const request = $.get(`<?= base_url('clientesController/deleteCliente/') ?>${id}`);
+            request.done((response) => {
+                loadTablaClientes();
+            });
+            request.fail((jqXHR) => {
+                alert(jqXHR.responseText);
+            });
+        }
     }
 </script>

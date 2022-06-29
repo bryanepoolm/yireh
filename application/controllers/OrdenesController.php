@@ -22,6 +22,7 @@ class OrdenesController extends CI_Controller
     $this->load->model('ordenes', 'o');
     $this->load->library('session');
     $this->load->library('form_validation');
+    $this->load->library('fpdf');
   }
 
   public function index()
@@ -30,6 +31,11 @@ class OrdenesController extends CI_Controller
     $this->load->view('layouts/mainLayout', ['contenido' => $view, 'titulo' => 'Ordenes']);
   }
 
+  /**
+   * deleteClienteOrden
+   * Elimina a un cliente de una orden, pero el cliente permance accesible para otras ordenes
+   * @author Bryan E Pool Mercado <bryanedilberto@hotmail.com>
+   */
   public function deleteClienteOrden()
   {
     $this->form_validation->set_rules('id-cliente', 'Cliente', 'required');
@@ -44,6 +50,20 @@ class OrdenesController extends CI_Controller
         ->set_output('Eliminado');
     } else {
     }
+  }
+
+  /**
+   * deleteOrden
+   * Elimina una orden
+   * @author Bryan E Pool Mercado <bryanedilberto@hotmail.com>
+   */
+  public function deleteOrden($id)
+  {
+    if ($this->input->is_ajax_request() && $id != null && !empty($id)) {
+      if ($this->o->deleteOrden($id)) {
+        $this->output->set_status_header(200)->set_content_type('text/plain')->set_output('Orden eliminada');
+      } else $this->output->set_status_header(500)->set_content_type('text/plain')->set_output('Error al eliminar la orden');
+    } else $this->output->set_status_header(404);
   }
 
   public function getOrdenActual()
@@ -67,6 +87,29 @@ class OrdenesController extends CI_Controller
       ->set_status_header(200)
       ->set_content_type('application/json')
       ->set_output(json_encode($ordenes));
+  }
+
+  public function downloadOrden($id)
+  {
+    if ($id != null && !empty($id)) {
+
+      $header = array('Nombre', 'Direccion', 'Telefono');
+      $data = $this->o->selectOrdenClientes($id);
+      $orden_data = [];
+      foreach ($data as $i => $val) {
+        $orden_data[] = [
+          $val['nombre'],
+          $val['direccion'],
+          $val['telefono'],
+        ];
+      }
+      $orden = $this->o->selectOrden($id, true);
+      $this->fpdf->AddPage();
+      $this->fpdf->SetFont('Arial', '', 14);
+      $this->fpdf->SetTitle("Lista de clientes, orden #{$orden->id}");
+      $this->fpdf->BasicTable($header, $orden_data);
+      die(var_dump($this->fpdf->Output()));
+    } else $this->output->set_status_header(404);
   }
 }
 

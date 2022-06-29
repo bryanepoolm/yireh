@@ -33,6 +33,15 @@ class ClientesController extends CI_Controller
     $clientes = $this->c->selectClientes();
     $this->output->set_status_header(200)->set_content_type('application/json')->set_output(json_encode($clientes));
   }
+
+  public function deleteCliente($id)
+  {
+    if ($this->input->is_ajax_request() && $id != null && !empty($id)) {
+      if ($this->c->deleteCliente($id)) {
+        $this->output->set_status_header(200)->set_content_type('text/plain')->set_output('Eliminado');
+      } else $this->output->set_status_header(500)->set_content_type('text/plain')->set_output('Error al eliminar al cliente');
+    } else $this->output->set_status_header(404);
+  }
 }
 
 
