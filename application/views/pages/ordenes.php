@@ -18,30 +18,34 @@
     });
     const loadTablaOrdenes = () => {
         let table = $("#table-ordenes");
+        table.html('<tr><td colspan="4"><center>Cargando...</center></td></tr>');
         const request = $.get("<?= base_url('ordenesController/getOrdenes') ?>");
-
         request.done((response) => {
             table.empty();
-            $.each(response, (i, v) => {
-                table.append(`
-                    <tr>
-                        <td>${v.id}</td>
-                        <td>${v.fecha}</td>
-                        <td>${v.status}</td>
-                        <td>
-                            <a href="javascript:void(0)" onclick="eliminar(${v.id})" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Borrar de la orden">
-                                <i style="font-size: 1rem;" class="bi-dash-circle"></i>
-                            </a>
-                            <a href="<?= base_url('ordenesController/downloadOrden/') ?>${v.id}" target="_blank" download class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Descargar lista">
-                                <i style="font-size: 1rem;" class="bi-cloud-download"></i>
-                            </a>
-                        </td>
-                    </tr>
-                `);
-            });
+            if (response.length > 0)
+                $.each(response, (i, v) => {
+                    v.status = v.status == 0 ? 'Cerrada' : 'Abierta';
+                    table.append(`
+                        <tr>
+                            <td>${v.id}</td>
+                            <td>${v.fecha}</td>
+                            <td>${v.status}</td>
+                            <td>
+                                <a href="javascript:void(0)" onclick="eliminar(${v.id})" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Borrar de la orden">
+                                    <i style="font-size: 1rem;" class="bi-dash-circle"></i>
+                                </a>
+                                <a href="<?= base_url('ordenesController/downloadOrden/') ?>${v.id}" target="_blank" download class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Descargar lista">
+                                    <i style="font-size: 1rem;" class="bi-cloud-download"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    `);
+                });
+            else table.html('<tr><td colspan="4"><center>Sin ordenes</center></td></tr>');
+
         });
         request.fail((jqXHR) => {
-            table.html('<center>Sin registros</center>');
+            table.html('<tr><td colspan="4"><center>Sin ordenes</center></td></tr>');
         });
 
     }

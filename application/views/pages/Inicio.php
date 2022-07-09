@@ -49,7 +49,7 @@
     <div class="col">
         <hr>
         <div class="card">
-            <div class="card-body">
+            <div class="card-body" id="order-table-content">
                 <table class="table table-hover ">
                     <thead>
                         <tr>
@@ -78,6 +78,8 @@
         const request = $.post("<?= base_url('InicioController/postAgregarClienteOrden') ?>", $("#form-agregar-cliente").serialize());
         request.done((response) => {
             $("#form-agregar-cliente")[0].reset();
+            $("#id-cliente").val('');
+            $("#id-cliente").attr('disabled',true);
             loadTablaClientes();
         });
         request.fail((jqXHR) => {
@@ -88,36 +90,45 @@
     const loadTablaClientes = () => {
         let table = $("#table-clientes");
         const request = $.get("<?= base_url('ordenesController/getOrdenActual') ?>");
-
         request.done((response) => {
             table.empty();
-            $.each(response, (i, v) => {
-                table.append(`
-                    <tr>
-                        <td>${v.nombre}</td>
-                        <td>${v.direccion}</td>
-                        <td>${v.telefono}</td>
-                        <td>
-                            <a href="javascript:void(0)" onclick="eliminarClienteOrden(${v.id_cliente})" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Borrar de la orden">
-                                <i style="font-size: 1rem;" class="bi-dash-circle"></i>
-                            </a>
-                        </td>
-                    </tr>
-                `);
-            });
+            if (response.length > 0) {
+                $.each(response, (i, v) => {
+                    table.append(`
+                        <tr>
+                            <td>${v.nombre}</td>
+                            <td>${v.direccion}</td>
+                            <td>${v.telefono}</td>
+                            <td>
+                                <a href="javascript:void(0)" onclick="eliminarClienteOrden(${v.id_cliente})" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Borrar de la orden">
+                                    <i style="font-size: 1rem;" class="bi-dash-circle"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    `);
+                });
+            } else table.html('<tr><td colspan="4"><center>Orden sin clientes</center></td></tr>');
         });
         request.fail((jqXHR) => {
             table.html('<center>Sin registros</center>');
         });
 
     }
-
     const eliminarClienteOrden = (id) => {
+        <?= SwConfirmar(
+            'eliminarClienteOrdenJS(id)',
+            'Eliminar cliente de la orden?',
+            'El cliente se mantendra registrado, pero sera eliminado de esta orden',
+            'Cliente eliminado',
+            'El cliente fue eliminado de la orden exitosamente'
+        ) ?>
+    }
+    const eliminarClienteOrdenJS = (id) => {
         const request = $.post("<?= base_url('ordenesController/deleteClienteOrden') ?>", {
             'id-cliente': id
         });
         request.done((response) => loadTablaClientes());
-        request.fail((jqXHR) => {});
+        request.fail((jqXHR) => false);
     }
 
     $("#nombre-cliente").autocomplete({

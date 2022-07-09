@@ -18,28 +18,31 @@
     });
     const loadTablaClientes = () => {
         let table = $("#table-clientes");
+        table.html('<tr><td colspan="4"><center>Cargando...</center></td></tr>');
         const request = $.get("<?= base_url('clientesController/getClientes') ?>");
 
         request.done((response) => {
             table.empty();
-            $.each(response, (i, v) => {
-                table.append(`
-                    <tr>
-                        <td>${v.id}</td>
-                        <td>${v.nombre}</td>
-                        <td>${v.direccion}</td>
-                        <td>${v.telefono}</td>
-                        <td>
-                            <a onclick="eliminar(${v.id})" href="javascript:void(0)" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Borrar de la orden">
-                                <i style="font-size: 1rem;" class="bi-dash-circle"></i>
-                            </a>
-                        </td>
-                    </tr>
-                `);
-            });
+            if (response.length > 0) {
+                $.each(response, (i, v) => {
+                    table.append(`
+                        <tr>
+                            <td>${v.id}</td>
+                            <td>${v.nombre}</td>
+                            <td>${v.direccion}</td>
+                            <td>${v.telefono}</td>
+                            <td>
+                                <a onclick="eliminar(${v.id})" href="javascript:void(0)" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Borrar de la orden">
+                                    <i style="font-size: 1rem;" class="bi-dash-circle"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    `);
+                });
+            } else table.html('<tr><td colspan="4"><center>Sin clientes</center></td></tr>');
         });
         request.fail((jqXHR) => {
-            table.html('<center>Sin registros</center>');
+            table.html('<tr><td colspan="4"><center>Sin clientes</center></td></tr>');
         });
 
     }
