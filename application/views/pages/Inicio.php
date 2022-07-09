@@ -5,22 +5,23 @@
                 <div class="card">
                     <div class="card-body">
                         <form id="form-agregar-cliente">
+                            <input type="hidden" name="id-cliente" id="id-cliente" disabled>
                             <div class="mb-3 row">
-                                <label for="staticEmail" class="col-sm-2 col-form-label">Nombre</label>
+                                <label for="nombre-cliente" class="col-sm-2 col-form-label">Nombre</label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="nombre-cliente" name="nombre-cliente" placeholder="Nombre del cliente">
                                 </div>
                             </div>
                             <div class="mb-3 row">
-                                <label for="inputPassword" class="col-sm-2 col-form-label">Direccion</label>
+                                <label for="direccion-cliente" class="col-sm-2 col-form-label">Direccion</label>
                                 <div class="col-sm-10">
-                                    <textarea class="form-control" name="direccion-cliente" rows="3"></textarea>
+                                    <textarea class="form-control" id="direccion-cliente" name="direccion-cliente" rows="3"></textarea>
                                 </div>
                             </div>
                             <div class="mb-3 row">
-                                <label for="inputPassword" class="col-sm-2 col-form-label">Telefono</label>
+                                <label for="telefono-cliente" class="col-sm-2 col-form-label">Telefono</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="telefono-cliente">
+                                    <input type="text" class="form-control" name="telefono-cliente" id="telefono-cliente">
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-sm btn-primary"><i class="bi-person-plus"></i> Agregar a la orden</button>
@@ -119,11 +120,6 @@
         request.fail((jqXHR) => {});
     }
 
-    /* $("#nombre-cliente").autocomplete({
-        source: "<?= base_url('clientesController/getClientes') ?>"
-    }); */
-
-
     $("#nombre-cliente").autocomplete({
         source: function(request, response) {
             $.ajax({
@@ -134,6 +130,8 @@
                     response($.map(data, function(el) {
                         return {
                             label: el.nombre,
+                            direccion: el.direccion,
+                            telefono: el.telefono,
                             value: el.id
                         };
                     }));
@@ -144,7 +142,11 @@
             // Prevent value from being put in the input:
             this.value = ui.item.label;
             // Set the next input's value to the "value" of the item.
-            $(this).next("input").val(ui.item.value);
+            $(this).next("input").val(ui.item.label);
+            $("#direccion-cliente").val(ui.item.direccion);
+            $("#telefono-cliente").val(ui.item.telefono);
+            $("#id-cliente").attr('disabled', false);
+            $("#id-cliente").val(ui.item.value);
             event.preventDefault();
         }
     });

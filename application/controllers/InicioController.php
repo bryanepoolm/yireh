@@ -44,14 +44,16 @@ class InicioController extends CI_Controller
     if ($this->input->is_ajax_request()) {
       //Si se envio el id de cliente, significa que es uno ya registrado previamente
       $esNuevoCliente = false;
-      if (!isset($_POST['id-cliente'])) {
+      $esValido = true;
+      if (!isset($_POST['id-cliente']) || empty($_POST['id-cliente'])) {
         $esNuevoCliente = true;
         $this->form_validation->set_rules('nombre-cliente', 'Nombre del cliente', 'required');
         $this->form_validation->set_rules('direccion-cliente', 'Direccion', 'required');
         $this->form_validation->set_rules('telefono-cliente', 'Telefono', 'required');
+        $esValido = $this->form_validation->run();
       }
 
-      if ($this->form_validation->run()) {
+      if ($esValido) {
         if ($esNuevoCliente) {
           $nombre = $this->input->post('nombre-cliente', true);
           $direccion = $this->input->post('direccion-cliente', true);
