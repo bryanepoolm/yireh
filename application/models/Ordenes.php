@@ -52,20 +52,23 @@ class Ordenes extends CI_Model
     else return false;
   }
 
-  public function selectOrdenes()
+  public function selectOrdenes($where = null)
   {
-    return $this->db->get($this->table)->result_array();
+    if (!is_null($where)) $this->db->where($where);
+    $get = $this->db->get($this->table);
+    if (!is_null($where)) $get = $get->row();
+    else $get = $get->result_array();
+
+    return $get;
   }
 
   public function updateOrden($set, $where)
   {
-
     $this->db->update($this->table, $set, $where);
   }
 
   public function deleteClienteOrden($where)
   {
-    $where['id_orden'] = $this->session->userdata('current-order');
     $this->db->delete($this->table2, $where);
   }
   public function deleteOrden($id)
@@ -78,7 +81,7 @@ class Ordenes extends CI_Model
   {
     if ($id_orden != null) $this->db->where('o.id', $id_orden);
 
-    $this->db->where('o.status', 0);
+    $this->db->where('o.status', 1);
     $this->db->from("{$this->table2} AS oc");
     $this->db->join('clientes AS c', 'c.id = oc.id_cliente');
     $this->db->join('ordenes AS o', 'o.id = oc.id_orden');

@@ -1,10 +1,3 @@
-<?php if ($this->session->has_userdata('current-order')) : ?>
-    <div class="alert alert-warning" role="alert">
-        <strong>Orden abierta</strong>
-    </div>
-<?php endif ?>
-
-
 <div class="row">
     <div class="col-12">
         <div class="row">

@@ -20,7 +20,6 @@ class OrdenesController extends CI_Controller
   {
     parent::__construct();
     $this->load->model('ordenes', 'o');
-    $this->load->library('session');
     $this->load->library('form_validation');
     $this->load->library('fpdf');
   }
@@ -42,7 +41,8 @@ class OrdenesController extends CI_Controller
 
     if ($this->form_validation->run()) {
       $id_cliente = $this->input->post('id-cliente', true);
-      $this->o->deleteClienteOrden(['id_cliente' => $id_cliente]);
+      $id_orden = $this->o->selectOrdenes(['status' => 1])->id;
+      $this->o->deleteClienteOrden(['id_cliente' => $id_cliente, 'id_orden' => $id_orden]);
 
       $this->output
         ->set_status_header(200)
@@ -69,7 +69,8 @@ class OrdenesController extends CI_Controller
   public function getOrdenActual()
   {
     $id_orden = null;
-    if (isset($_SESSION['current-order']) || !empty($_SESSION['current-order'])) $id_orden = $this->session->userdata('current-order');
+    $get_orden = $this->o->selectOrdenes(['status' => 1]);
+    if (count($get_orden) > 0) $id_orden = $get_orden->id;
 
     $orden_clientes = $this->o->selectOrdenClientes($id_orden);
 

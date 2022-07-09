@@ -30,7 +30,7 @@ class ClientesController extends CI_Controller
 
   public function getClientes()
   {
-    $like_match = $_GET['term'];
+    $like_match = isset($_GET['term']) ? $_GET['term'] : false;
     $clientes = $this->c->selectClientes($like_match);
     $this->output->set_status_header(200)->set_content_type('application/json')->set_output(json_encode($clientes));
   }
