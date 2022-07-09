@@ -5,12 +5,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
  *
  * Helpers Html_libraries_helper
  *
- * This Helpers for ...
- * 
- * @package   CodeIgniter
- * @category  Helpers
- * @author    Setiawan Jodi <jodisetiawan@fisip-untirta.ac.id>
- * @link      https://github.com/setdjod/myci-extension/
+ * Herramientas HTML variadas
+ * - Sweet Alert
+ * @author    Bryan E. Pool Mercado <bryanedilberto.poolmercado@gmail.com
  *
  */
 
