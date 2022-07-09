@@ -79,11 +79,14 @@
         request.done((response) => {
             $("#form-agregar-cliente")[0].reset();
             $("#id-cliente").val('');
-            $("#id-cliente").attr('disabled',true);
+            $("#id-cliente").attr('disabled', true);
             loadTablaClientes();
         });
         request.fail((jqXHR) => {
-            console.log(jqXHR);
+            var message = null;
+            if (jqXHR.status == 400) message = 'Campos incompletos';
+            else message = jqXHR.responseText;
+            <?= SwAlerta('error', 'Error', '${message}') ?>
         });
     });
 

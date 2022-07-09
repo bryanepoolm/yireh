@@ -29,7 +29,7 @@ if (!function_exists('SwConfirmar')) {
    * @param $text_confirm
    * @return string
    */
-  function SwConfirmar($function_name, $title = 'Esta seguro que desea continuar?', $text = 'Esta accion no se puede repetir', $title_confirm = 'Completado', $text_confirm = 'Accoion completada con exito')
+  function SwConfirmar($function_name, $title = 'Esta seguro que desea continuar?', $text = 'Esta accion no se puede repetir', $title_confirm = 'Completado', $text_confirm = 'Accion completada con exito')
   {
     return "
       Swal.fire({
@@ -51,6 +51,29 @@ if (!function_exists('SwConfirmar')) {
           }
         }
       })
+    ";
+  }
+}
+
+if (!function_exists('SwAlerta')) {
+  /**
+   * SwAlerta
+   *
+   * Alerta SweetAlert 
+   *
+   * @param $icon
+   * @param $title
+   * @param $text
+   * @return string
+   */
+  function SwAlerta($icon = 'success', $title = 'Completado', $text = 'Accion completada con exito')
+  {
+    return "
+    Swal.fire(
+      `{$title}`,
+      `{$text}`,
+      '{$icon}'
+    );
     ";
   }
 }
